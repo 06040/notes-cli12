@@ -1,0 +1,52 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Create data directory
+      run: mkdir -p data
+      
+    - name: Compile Java files
+      run: javac src/com/example/*.java
+      
+    - name: Test compilation success
+      run: |
+        if [ -f "src/com/example/App.class" ] && [ -f "src/com/example/NotesStore.class" ]; then
+          echo "✅ Компиляция прошла успешно"
+        else
+          echo "❌ Ошибка компиляции"
+          exit 1
+        fi
+    
+    - name: Run basic tests
+      run: |
+        # Проверяем, что приложение запускается
+        java -cp src com.example.App --cmd=count
+        
+        # Добавляем тестовую заметку
+        java -cp src com.example.App --cmd=add --text="GitHub Actions Test"
+        
+        # Проверяем количество заметок
+        COUNT=$(java -cp src com.example.App --cmd=count)
+        if [ "$COUNT" -eq "1" ]; then
+          echo "✅ Приложение работает корректно"
+        else
+          echo "❌ Тест приложения не пройден"
+          exit 1
+        fi

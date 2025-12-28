@@ -43,6 +43,24 @@ public class App {
                     }
                     break;
                     
+                case "rm":
+                    if (id == null) {
+                        System.out.println("Ошибка: не указан ID для удаления");
+                        return;
+                    }
+                    try {
+                        int removeId = Integer.parseInt(id);
+                        boolean removed = NotesStore.removeNote(removeId);
+                        if (removed) {
+                            System.out.println("Заметка #" + removeId + " удалена");
+                        } else {
+                            System.out.println("Not found #" + removeId);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Ошибка: ID должен быть числом");
+                    }
+                    break;
+                    
                 default:
                     System.out.println("Неизвестная команда: " + command);
                     printUsage();
@@ -57,9 +75,14 @@ public class App {
         System.out.println("Использование:");
         System.out.println("  --cmd=add --text=\"Текст заметки\"");
         System.out.println("  --cmd=list");
+        System.out.println("  --cmd=rm --id=<номер>");
     }
 }
-EOFcat > src/com/example/App.java << 'EOF'
+EOF# Проверим содержимое конфликтующего файла
+cat src/com/example/App.java
+
+# Создадим правильную версию
+cat > src/com/example/App.java << 'EOF'
 package com.example;
 
 public class App {
@@ -105,6 +128,24 @@ public class App {
                     }
                     break;
                     
+                case "rm":
+                    if (id == null) {
+                        System.out.println("Ошибка: не указан ID для удаления");
+                        return;
+                    }
+                    try {
+                        int removeId = Integer.parseInt(id);
+                        boolean removed = NotesStore.removeNote(removeId);
+                        if (removed) {
+                            System.out.println("Заметка #" + removeId + " удалена");
+                        } else {
+                            System.out.println("Not found #" + removeId);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Ошибка: ID должен быть числом");
+                    }
+                    break;
+                    
                 default:
                     System.out.println("Неизвестная команда: " + command);
                     printUsage();
@@ -119,5 +160,6 @@ public class App {
         System.out.println("Использование:");
         System.out.println("  --cmd=add --text=\"Текст заметки\"");
         System.out.println("  --cmd=list");
+        System.out.println("  --cmd=rm --id=<номер>");
     }
 }

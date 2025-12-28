@@ -34,6 +34,24 @@ public class NotesStore {
         return readAllNotes();
     }
     
+    public static boolean removeNote(int id) throws IOException {
+        List<String[]> notes = readAllNotes();
+        boolean found = false;
+        
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(NOTES_FILE))) {
+            for (String[] note : notes) {
+                int currentId = Integer.parseInt(note[0]);
+                if (currentId != id) {
+                    writer.write(note[0] + ";" + note[1]);
+                    writer.newLine();
+                } else {
+                    found = true;
+                }
+            }
+        }
+        return found;
+    }
+    
     private static List<String[]> readAllNotes() throws IOException {
         List<String[]> notes = new ArrayList<>();
         Path filePath = Paths.get(NOTES_FILE);
